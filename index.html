@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>تحكم في الإصبع</title>
+  <title>FingerMove Project</title>
   <style>
     body {
       font-family: "Tahoma", sans-serif;
@@ -11,16 +11,24 @@
       text-align: center;
       padding: 50px;
     }
-    h1 {
+    header {
       margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 36px;
+      margin: 10px 0;
+    }
+    .logo {
+      font-size: 60px;
+      margin-bottom: 10px;
     }
     button {
       background: #ff9800;
       border: none;
-      padding: 20px 40px;
+      padding: 30px 60px;
       margin: 20px;
-      font-size: 20px;
-      border-radius: 10px;
+      font-size: 28px;
+      border-radius: 15px;
       cursor: pointer;
       transition: 0.3s;
     }
@@ -31,13 +39,16 @@
   </style>
 </head>
 <body>
-  <h1>برنامج التحكم في الإصبع</h1>
+  <header>
+    <div class="logo">✋</div>
+    <h1>FingerMove – مشروع التحكم بالإصبع</h1>
+  </header>
+
   <button onclick="sendCommand('GRAB')">إمساك ✊</button>
   <button onclick="sendCommand('RELEASE')">إفلات 🖐️</button>
 
   <script>
     async function sendCommand(cmd) {
-      // استخدام Web Serial API
       try {
         const port = await navigator.serial.requestPort();
         await port.open({ baudRate: 9600 });
