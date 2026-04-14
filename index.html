@@ -2,36 +2,58 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>FingerMove Project</title>
+  <title>FingerMove – مشروع التحكم بالإصبع</title>
   <style>
     body {
       font-family: "Tahoma", sans-serif;
       background: linear-gradient(135deg, #1e3c72, #2a5298);
       color: #fff;
-      text-align: center;
-      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
     }
+
     header {
+      text-align: center;
       margin-bottom: 40px;
     }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 15px;
+    }
+
     h1 {
       font-size: 36px;
       margin: 10px 0;
     }
-    .logo {
-      font-size: 60px;
-      margin-bottom: 10px;
+
+    p {
+      font-size: 18px;
+      color: #ddd;
+      margin-bottom: 40px;
     }
+
+    .buttons {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+    }
+
     button {
       background: #ff9800;
       border: none;
-      padding: 30px 60px;
-      margin: 20px;
-      font-size: 28px;
+      padding: 25px 50px;
+      font-size: 24px;
       border-radius: 15px;
       cursor: pointer;
       transition: 0.3s;
+      color: #fff;
     }
+
     button:hover {
       background: #e68900;
       transform: scale(1.1);
@@ -40,12 +62,15 @@
 </head>
 <body>
   <header>
-    <div class="logo">✋</div>
+    <img src="logo.png" alt="FingerMove Logo" class="logo">
     <h1>FingerMove – مشروع التحكم بالإصبع</h1>
+    <p>تحكم في حركة السيرفو كإصبع يمسك ويفلت بسهولة</p>
   </header>
 
-  <button onclick="sendCommand('GRAB')">إمساك ✊</button>
-  <button onclick="sendCommand('RELEASE')">إفلات 🖐️</button>
+  <div class="buttons">
+    <button onclick="sendCommand('GRAB')">إمساك ✊</button>
+    <button onclick="sendCommand('RELEASE')">إفلات 🖐️</button>
+  </div>
 
   <script>
     async function sendCommand(cmd) {
