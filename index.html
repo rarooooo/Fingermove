@@ -1,89 +1,52 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>FingerMove – مشروع التحكم بالإصبع</title>
+  <title>FingerMove – التحكم المطور</title>
   <style>
-    body {
-      font-family: "Tahoma", sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .logo {
-      width: 120px;
-      margin-bottom: 15px;
-    }
-
-    h1 {
-      font-size: 36px;
-      margin: 10px 0;
-    }
-
-    p {
-      font-size: 18px;
-      color: #ddd;
-      margin-bottom: 40px;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
-    }
-
-    button {
-      background: #ff9800;
-      border: none;
-      padding: 25px 50px;
-      font-size: 24px;
-      border-radius: 15px;
-      cursor: pointer;
-      transition: 0.3s;
-      color: #fff;
-    }
-
-    button:hover {
-      background: #e68900;
-      transform: scale(1.1);
-    }
+    body { font-family: sans-serif; background: #2a5298; color: white; text-align: center; padding-top: 50px; }
+    .btn-group { margin-top: 20px; }
+    button { padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border-radius: 10px; border: none; margin: 10px; }
+    .connect { background: #4CAF50; color: white; }
+    .action { background: #ff9800; color: white; }
+    #status { margin-top: 20px; color: #ffeb3b; }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="FingerMove Logo" class="logo">
-    <h1>FingerMove – مشروع التحكم بالإصبع</h1>
-    <p>تحكم في حركة السيرفو كإصبع يمسك ويفلت بسهولة</p>
-  </header>
 
-  <div class="buttons">
-    <button onclick="sendCommand('GRAB')">إمساك ✊</button>
-    <button onclick="sendCommand('RELEASE')">إفلات 🖐️</button>
+  <h1>FingerMove Control</h1>
+  <button class="connect" onclick="connectSerial()">اتصال بالأردوينو 🔌</button>
+  
+  <div class="btn-group">
+    <button class="action" onclick="sendCommand('GRAB')">إمساك ✊</button>
+    <button class="action" onclick="sendCommand('RELEASE')">إفلات 🖐️</button>
   </div>
 
+  <p id="status">الحالة: غير متصل</p>
+
   <script>
-    async function sendCommand(cmd) {
+    let port;
+    let writer;
+
+    async function connectSerial() {
       try {
-        const port = await navigator.serial.requestPort();
+        port = await navigator.serial.requestPort();
         await port.open({ baudRate: 9600 });
-        const writer = port.writable.getWriter();
-        const data = new TextEncoder().encode(cmd + "\n");
-        await writer.write(data);
-        writer.releaseLock();
+        writer = port.writable.getWriter();
+        document.getElementById('status').innerText = "الحالة: متصل بنجاح ✅";
       } catch (err) {
-        alert("تأكد من أن المتصفح يدعم Web Serial (Chrome/Edge) وأن الأردوينو متصل.");
+        console.error(err);
+        alert("فشل الاتصال: تأكد من اختيار المنفذ الصحيح.");
       }
+    }
+
+    async function sendCommand(cmd) {
+      if (!writer) {
+        alert("يرجى الضغط على زر الاتصال أولاً!");
+        return;
+      }
+      const data = new TextEncoder().encode(cmd + "\n");
+      await writer.write(data);
     }
   </script>
 </body>
