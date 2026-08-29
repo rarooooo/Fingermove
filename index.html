@@ -1,53 +1,512 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>FingerMove – التحكم المطور</title>
-  <style>
-    body { font-family: sans-serif; background: #2a5298; color: white; text-align: center; padding-top: 50px; }
-    .btn-group { margin-top: 20px; }
-    button { padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border-radius: 10px; border: none; margin: 10px; }
-    .connect { background: #4CAF50; color: white; }
-    .action { background: #ff9800; color: white; }
-    #status { margin-top: 20px; color: #ffeb3b; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vanguard Robotics Team — 35405</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0B0D;
+    --ink-2:#15171B;
+    --chrome-1:#C9CED6;
+    --chrome-2:#EDEFF2;
+    --paper:#FAFAF8;
+    --paper-line:rgba(10,11,13,0.06);
+    --text:#14151A;
+    --text-soft:#585B63;
+    --blue:#3FA0D6;
+    --blue-deep:#2A7BAE;
+    --blue-tint:#EAF4FA;
+    --radius-img:18px;
+    --radius-card:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'IBM Plex Sans Arabic','Space Grotesk',sans-serif;
+    background:var(--paper);
+    color:var(--text);
+    overflow-x:hidden;
+  }
+  .en{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  img{display:block;max-width:100%;}
+
+  /* ===== grid texture ===== */
+  .grid-bg{
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+    background-size: 34px 34px;
+  }
+  .grid-bg-dark{
+    background-image:
+      linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px);
+    background-size: 34px 34px;
+  }
+
+  /* ===== reveal on scroll ===== */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ===== marquee ticker ===== */
+  .ticker{
+    background:var(--ink);
+    color:var(--chrome-2);
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:1px solid rgba(255,255,255,0.12);
+    border-bottom:1px solid rgba(255,255,255,0.12);
+    padding:11px 0;
+  }
+  .ticker-track{
+    display:inline-block;
+    animation: scroll-left 26s linear infinite;
+  }
+  .ticker span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    letter-spacing:.14em;
+    margin:0 22px;
+    color:var(--chrome-1);
+  }
+  .ticker span.accent{color:var(--blue);}
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    background:radial-gradient(ellipse at 30% -10%, #1b1e24 0%, var(--ink) 55%);
+    color:var(--chrome-2);
+    padding:56px 22px 46px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 100%, rgba(63,160,214,0.10), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-logo{
+    width:74px; height:74px; border-radius:50%;
+    object-fit:cover;
+    margin:0 auto 22px;
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:0 0 0 6px rgba(255,255,255,0.03);
+  }
+  .hero-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.22em;
+    color:var(--blue);
+    margin-bottom:16px;
+  }
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(34px, 9vw, 52px);
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    color:var(--chrome-2);
+    text-shadow:0 1px 0 rgba(255,255,255,0.08);
+  }
+  .hero h1 .thin{
+    display:block;
+    font-weight:400;
+    font-size:0.42em;
+    letter-spacing:.32em;
+    color:var(--chrome-1);
+    margin-top:10px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .hero p.lead{
+    max-width:480px; margin:22px auto 0;
+    color:#9BA0AA;
+    font-size:15px; line-height:1.9;
+  }
+  .hero-num{
+    margin-top:38px;
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    padding:18px 34px;
+  }
+  .hud-corner{position:absolute; width:16px; height:16px; border:2px solid var(--blue);}
+  .hud-corner.tl{top:0; right:0; border-left:none; border-bottom:none;}
+  .hud-corner.tr{top:0; left:0; border-right:none; border-bottom:none;}
+  .hud-corner.bl{bottom:0; right:0; border-left:none; border-top:none;}
+  .hud-corner.br{bottom:0; left:0; border-right:none; border-top:none;}
+  .hero-num .big{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(52px, 16vw, 78px);
+    line-height:1;
+    color:#fff;
+    letter-spacing:-0.02em;
+  }
+  .hero-num .big .plus{color:var(--blue); font-size:.55em; vertical-align:top;}
+  .hero-num .label{
+    margin-top:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    color:var(--chrome-1);
+  }
+  .hero-sub{
+    margin-top:30px;
+    display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  }
+  .hero-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:.08em;
+    color:#9BA0AA;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:100px;
+    padding:6px 14px;
+  }
+  .scroll-cue{
+    margin-top:40px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px; letter-spacing:.2em; color:#5c606a;
+  }
+  .scroll-cue::after{content:"↓"; display:block; margin-top:6px; animation:bob 1.8s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* ===== sections shared ===== */
+  section{padding:56px 22px;}
+  .section-inner{max-width:520px; margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:.2em;
+    color:var(--blue-deep);
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:""; width:18px; height:1px; background:var(--blue-deep);}
+  h2.section-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(26px,7vw,32px);
+    line-height:1.2;
+    color:var(--text);
+    margin-bottom:14px;
+  }
+  .section-desc{color:var(--text-soft); font-size:14.5px; line-height:1.85; margin-bottom:30px;}
+
+  /* ===== stats telemetry grid ===== */
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .stat-card{
+    position:relative;
+    background:var(--ink);
+    color:var(--chrome-2);
+    border-radius:14px;
+    padding:20px 16px;
+    overflow:hidden;
+  }
+  .stat-card .hud-corner{width:10px;height:10px;border-width:1.5px;}
+  .stat-card .num{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,8vw,34px);
+    color:#fff;
+    display:block;
+  }
+  .stat-card .num .unit{font-size:.5em; color:var(--blue); margin-right:2px;}
+  .stat-card .lbl{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px; letter-spacing:.05em;
+    color:#9BA0AA; margin-top:6px; line-height:1.5;
+  }
+  .stat-full{grid-column:1/-1; background:linear-gradient(120deg,var(--ink),#1c2530);}
+
+  /* ===== timeline ===== */
+  .tl{position:relative; padding-right:26px; margin-top:8px;}
+  .tl::before{content:""; position:absolute; right:6px; top:6px; bottom:6px; width:2px; background:linear-gradient(var(--blue), var(--paper-line));}
+  .tl-item{position:relative; padding-bottom:26px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-dot{position:absolute; right:-26px; top:2px; width:14px; height:14px; border-radius:50%; background:var(--paper); border:2.5px solid var(--blue);}
+  .tl-tag{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--blue-deep); letter-spacing:.08em; margin-bottom:4px;}
+  .tl-title{font-weight:600; font-size:15.5px; margin-bottom:4px;}
+  .tl-desc{font-size:13.5px; color:var(--text-soft); line-height:1.7;}
+  .tl-img{margin-top:10px; border-radius:var(--radius-img); overflow:hidden; aspect-ratio:4/3;}
+  .tl-img img{width:100%; height:100%; object-fit:cover; filter:saturate(.92) contrast(1.04) brightness(1.01);}
+
+  /* ===== poster note (field log callout) ===== */
+  .poster-note{
+    display:flex; align-items:flex-start; gap:14px;
+    background:var(--blue-tint);
+    border:1px dashed var(--blue-deep);
+    border-radius:var(--radius-card);
+    padding:20px;
+  }
+  .poster-note-icon{
+    width:44px; height:44px; border-radius:50%;
+    background:#fff; border:1.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .poster-note-icon svg{width:20px; height:20px;}
+  .poster-note-title{font-weight:700; font-size:15px; margin-bottom:6px;}
+  .poster-note-desc{font-size:13.5px; color:var(--text-soft); line-height:1.8;}
+
+  /* ===== mission ===== */
+  .mission-card{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius-card);
+    padding:20px;
+    margin-bottom:12px;
+  }
+  .mission-top{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+  .mission-icon{
+    width:44px; height:44px; border-radius:50%;
+    border:1.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .mission-icon svg{width:20px; height:20px;}
+  .mission-name{font-weight:700; font-size:15px;}
+  .mission-proof{font-size:13.5px; color:var(--text-soft); line-height:1.85; padding-right:56px;}
+  .mission-metric{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:10px; margin-right:56px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px;
+    color:var(--blue-deep); background:var(--blue-tint);
+    padding:5px 10px; border-radius:100px;
+  }
+
+  /* ===== sign loud ===== */
+  .signloud-sec{
+    background:var(--ink);
+    color:var(--chrome-2);
+    position:relative;
+  }
+  .signloud-badge{
+    background:#fff; border-radius:18px; padding:22px;
+    display:flex; align-items:center; gap:16px; margin-bottom:22px;
+  }
+  .signloud-badge img{width:56px; height:56px; object-fit:contain;}
+  .signloud-badge .sl-name{font-weight:700; font-size:16px; color:var(--ink); font-family:'Space Grotesk',sans-serif;}
+  .signloud-badge .sl-tag{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--blue-deep); letter-spacing:.06em; margin-top:2px;}
+  .signloud-sec .section-desc{color:#9BA0AA;}
+  .signloud-sec h2.section-title{color:#fff;}
+  .signloud-sec .eyebrow{color:var(--blue);}
+  .signloud-sec .eyebrow::before{background:var(--blue);}
+  .sl-steps{display:flex; flex-direction:column; gap:10px; margin-top:20px;}
+  .sl-step{display:flex; gap:12px; align-items:flex-start; padding:14px; border:1px solid rgba(255,255,255,0.12); border-radius:12px;}
+  .sl-step .n{font-family:'IBM Plex Mono',monospace; color:var(--blue); font-size:13px; flex-shrink:0;}
+  .sl-step .t{font-size:13.5px; color:#C7CAD1; line-height:1.7;}
+
+  /* ===== testimonials ===== */
+  .quote-wrap{display:flex; flex-direction:column; gap:12px;}
+  .quote-card{
+    background:var(--blue-tint);
+    border-radius:var(--radius-card);
+    padding:20px;
+    position:relative;
+  }
+  .quote-card::before{
+    content:"”"; position:absolute; top:8px; left:16px;
+    font-family:'Space Grotesk',sans-serif; font-size:40px; color:rgba(63,160,214,0.28); line-height:1;
+  }
+  .quote-text{font-size:14.5px; line-height:1.9; color:var(--text); position:relative; z-index:1;}
+  .quote-sign{margin-top:12px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue-deep);}
+
+  /* ===== goal ===== */
+  .goal-card{
+    background:var(--ink); color:#fff; border-radius:var(--radius-card);
+    padding:26px 22px; text-align:center; position:relative; overflow:hidden;
+  }
+  .goal-card .hud-corner{width:12px; height:12px;}
+  .goal-label{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; color:var(--blue); margin-bottom:10px;}
+  .goal-num{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:56px;}
+  .goal-sub{font-size:12.5px; color:#9BA0AA; margin-top:6px; margin-bottom:20px;}
+  .bar-track{height:8px; background:rgba(255,255,255,0.12); border-radius:100px; overflow:hidden;}
+  .bar-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--blue-deep),var(--blue)); border-radius:100px; transition:width 1.8s cubic-bezier(.2,.8,.2,1);}
+  .bar-fill.in{width:10.4%;}
+  .bar-labels{display:flex; justify-content:space-between; margin-top:8px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#767a84;}
+
+  /* ===== footer ===== */
+  footer{
+    background:var(--ink); color:#8f939c; text-align:center; padding:44px 22px 30px;
+  }
+  footer img.foot-logo{width:46px; height:46px; border-radius:50%; margin:0 auto 14px; object-fit:cover;}
+  footer .foot-name{font-family:'Space Grotesk',sans-serif; color:#fff; font-weight:600; font-size:16px; letter-spacing:.03em;}
+  footer .foot-id{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue); margin-top:4px; letter-spacing:.1em;}
+  footer .foot-domain{margin-top:18px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#5c606a;}
+
+  @media(min-width:600px){
+    .section-inner{max-width:640px;}
+    .stat-grid{grid-template-columns:repeat(4,1fr);}
+    .stat-full{grid-column:span 2;}
+  }
+</style>
 </head>
 <body>
 
-  <h1>FingerMove Control</h1>
-  <button class="connect" onclick="connectSerial()">اتصال بالأردوينو 🔌</button>
-  
-  <div class="btn-group">
-    <button class="action" onclick="sendCommand('GRAB')">إمساك ✊</button>
-    <button class="action" onclick="sendCommand('RELEASE')">إفلات 🖐️</button>
+<!-- HERO -->
+<div class="hero grid-bg-dark">
+  <div class="hero-eyebrow mono">FIRST TECH CHALLENGE // TEAM 35405</div>
+  <h1>VANGUARD<span class="thin">ROBOTICS TEAM</span></h1>
+  <p class="lead">فريق روبوتيات ليبي، تأسس قبل 4 أشهر — نبني تقنية إنسانية، ونمهّد الطريق لجيل جديد من المبتكرين.</p>
+
+  <div class="hero-num">
+    <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div><div class="hud-corner br"></div>
+    <span class="big mono" id="heroCounter">0<span class="plus">+</span></span>
+    <span class="label">شخص تعرف على وجود الروبوتات في ليبيا</span>
   </div>
 
-  <p id="status">الحالة: غير متصل</p>
+  <div class="hero-sub">
+    <span class="hero-tag">17 عضو</span>
+    <span class="hero-tag">3 بطولات</span>
+    <span class="hero-tag">4 أشهر فقط</span>
+  </div>
+  <div class="scroll-cue mono">SCROLL</div>
+</div>
 
-  <script>
-    let port;
-    let writer;
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track mono">
+    <span>VANGUARD ROBOTICS</span><span class="accent">•</span>
+    <span>FTC 35405</span><span class="accent">•</span>
+    <span>LIBYA</span><span class="accent">•</span>
+    <span>SIGN LOUD</span><span class="accent">•</span>
+    <span>BIOBUZZ SEASON</span><span class="accent">•</span>
+    <span>VANGUARD ROBOTICS</span><span class="accent">•</span>
+    <span>FTC 35405</span><span class="accent">•</span>
+    <span>LIBYA</span><span class="accent">•</span>
+    <span>SIGN LOUD</span><span class="accent">•</span>
+    <span>BIOBUZZ SEASON</span><span class="accent">•</span>
+  </div>
+</div>
 
-    async function connectSerial() {
-      try {
-        port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        writer = port.writable.getWriter();
-        document.getElementById('status').innerText = "الحالة: متصل بنجاح ✅";
-      } catch (err) {
-        console.error(err);
-        alert("فشل الاتصال: تأكد من اختيار المنفذ الصحيح.");
-      }
-    }
+<!-- STATS -->
+<section class="grid-bg reveal">
+  <div class="section-inner">
+    <div class="eyebrow mono">01 / TELEMETRY</div>
+    <h2 class="section-title">أثرنا بالأرقام</h2>
+    <p class="section-desc">قراءات حقيقية من 4 أشهر عمل ميداني ورقمي.</p>
 
-    async function sendCommand(cmd) {
-      if (!writer) {
-        alert("يرجى الضغط على زر الاتصال أولاً!");
-        return;
-      }
-      const data = new TextEncoder().encode(cmd + "\n");
-      await writer.write(data);
-    }
-  </script>
-</body>
-</html>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="hud-corner tl"></div><div class="hud-corner br"></div>
+        <span class="num mono">17</span>
+        <span class="lbl">عضو فريق</span>
+      </div>
+      <div class="stat-card">
+        <div class="hud-corner tl"></div><div class="hud-corner br"></div>
+        <span class="num mono">3</span>
+        <span class="lbl">بطولات مشارك بها</span>
+      </div>
+      <div class="stat-card">
+        <div class="hud-corner tl"></div><div class="hud-corner br"></div>
+        <span class="num mono">~520<span class="unit">+</span></span>
+        <span class="lbl">مستفيد حضوري مباشر</span>
+      </div>
+      <div class="stat-card">
+        <div class="hud-corner tl"></div><div class="hud-corner br"></div>
+        <span class="num mono">20</span>
+        <span class="lbl">اجتماع تعاون دولي</span>
+      </div>
+      <div class="stat-card stat-full">
+        <div class="hud-corner tl"></div><div class="hud-corner br"></div>
+        <span class="num mono">800K<span class="unit">+</span></span>
+        <span class="lbl">مشاهدة رقمية عبر التعاون مع شخصيات ليبية للتوعية بمجال الروبوتات — إجمالي كل المنصات</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="grid-bg reveal">
+  <div class="section-inner">
+    <div class="eyebrow mono">02 / TIMELINE</div>
+    <h2 class="section-title">رحلتنا حتى الآن</h2>
+    <p class="section-desc">من أول تدريب لعشرين طالبة، إلى ثالث مشاركة لنا في بطولة رسمية.</p>
+
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">التأسيس</div>
+        <div class="tl-title">تدريب 20 طالبة — ثانوية طليطلة</div>
+        <div class="tl-desc">تدريب أسبوعين انتهى بمعرض ختامي داخل المدرسة، عرضت فيه الطالبات مشاريعهن الروبوتية أمام حوالي 100 زائر.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">توعية عامة</div>
+        <div class="tl-title">اليوم الوطني للتقنية</div>
+        <div class="tl-desc">تفاعل حوالي 200 زائر مع كشك الفريق داخل الكلية، وتعرّفوا على تحدي FTC للمرة الأولى.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">تمكين الفتيات</div>
+        <div class="tl-title">تدريب Empower Her — 20 فتاة</div>
+        <div class="tl-desc">أسبوعين بالتعاون مع مبادرة Empower Her لتمكين الفتيات في المجالات التقنية، بمشاركة 20 متدربة.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">بناء داخلي</div>
+        <div class="tl-title">تدريب الأعضاء الجدد + العمل التقني</div>
+        <div class="tl-desc">أسبوع تدريب داخلي للأعضاء المؤسسين، إلى جانب تجارب هندسية عملية بالحساسات والدوائر.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">مبادرة إنسانية</div>
+        <div class="tl-title">انطلاق مبادرة Sign Loud</div>
+        <div class="tl-desc">بداية تعلّم الفريق للغة الإشارة، والتخطيط لدمج الصم كأعضاء فاعلين في مجال الروبوتات — أول مبادرة من نوعها.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">البطولات</div>
+        <div class="tl-title">من Pro Tech إلى Emily فهذه البطولة</div>
+        <div class="tl-desc">ثالث مشاركة رسمية للفريق، بعد بطولتين سابقتين صقلتا خبرة الفريق الفني والتنافسي.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-tag mono">قادم قريباً</div>
+        <div class="tl-title">تدريب شهر كامل للمستجدين</div>
+        <div class="tl-desc">ننطلق قريباً بأطول برنامج تدريبي لنا حتى الآن، موجّه لكل من يريد دخول عالم الروبوتات من الصفر.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIELD LOG -->
+<section class="reveal" style="background:#fff;">
+  <div class="section-inner">
+    <div class="eyebrow mono">03 / FIELD LOG</div>
+    <h2 class="section-title">لحظات من الميدان</h2>
+    <p class="section-desc">ورش، بطولات، واجتماعات — هذا نحن أثناء الشغل.</p>
+
+    <div class="poster-note">
+      <div class="poster-note-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0A0B0D" stroke-width="1.6"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 13l5-5 4 4 5-6 4 5"/><circle cx="8" cy="8" r="1.4"/></svg>
+      </div>
+      <div>
+        <div class="poster-note-title">شيك بوستر Vanguard Outreach</div>
+        <div class="poster-note-desc">كل صور ولحظاتنا الميدانية موثقة هناك بالتفصيل — مرّوا عليه بجناحنا.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="grid-bg reveal">
+  <div class="section-inner">
+    <div class="eyebrow mono">04 / OUR MISSION</div>
+    <h2 class="section-title">رسالتنا، مدعومة بالأرقام</h2>
+    <p class="section-desc">لسنا مجرد فريق يركّب قطع؛ نبني تقنية تخدم الإنسان، ونصنع قادة، ونترك أثر مجتمعي حقيقي.</p>
+
+    <div class="mission-card">
+      <div class="mission-top">
+        <div class="mission-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0A0B0D" stroke-width="1.6"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-
